@@ -21,6 +21,7 @@ const form = reactive({
         {
             title: '结束',
             key: 'ee',
+            slot:"v_ee",
             width:180,
         },
         {
@@ -50,7 +51,8 @@ const form = reactive({
 })
 
 const dataTime = computed(()=>form.data.map(item=>{
-    if( item.ee&&item.ss ){
+    item._ee = null;
+    if( item.ss&&item.ee ){
         let second = moment(item.ee).format('X')-moment(item.ss).format('X');
         second = second-1*60*60; //减去午休一小时
 
@@ -58,6 +60,12 @@ const dataTime = computed(()=>form.data.map(item=>{
         item.minute = ((second-8*60*60)/60).toFixed(3);
 
         item.time = (second/60/60).toFixed(3);
+    }
+    // 预测下一天可以走的时间
+    if( item.ss&&!item.ee ){
+        let _ee = Number(moment(item.ss).format('X')) + 1*60*60 + 8*60*60 + Number(-form.countSecond)
+        item._ee = moment(_ee*1000).format("YYYY-MM-DD HH:mm:ss");
+        console.log("_ee",item._ee)
     }
     return item;
 }))
@@ -114,6 +122,12 @@ onMounted(() => {
 <template>
     <div class="index-page">
         <Table :columns="form.columns" :data="dataTime">
+            <template #v_ee="{ row, index }">
+                <div>
+                    <Text strong v-if="row.ee">{{row.ee}}</Text>
+                    <Text strong v-if="row._ee" style="color:#ed4014;">{{row._ee}}</Text>
+                </div>
+            </template>
             <template #v_time="{ row, index }">
                 <div v-if="row.ss&&row.ee">
                     <Text strong v-if="row.time>=8" style="color:#19be6b;">{{row.time}}</Text>
