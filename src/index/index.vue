@@ -26,16 +26,19 @@ const form = reactive({
         {
             title: '工时',
             key: 'time',
+            slot:"v_time",
             align:"center"
         },
         {
             title: '剩余(秒)',
             key: 'second',
+            slot:"v_second",
             align:"center"
         },
         {
             title: '剩余(分)',
             key: 'minute',
+            slot:"v_minute",
             align:"center"
         }
     ],
@@ -110,17 +113,36 @@ onMounted(() => {
 
 <template>
     <div class="index-page">
-        <Table :columns="form.columns" :data="dataTime"></Table>
+        <Table :columns="form.columns" :data="dataTime">
+            <template #v_time="{ row, index }">
+                <div v-if="row.ss&&row.ee">
+                    <Text strong v-if="row.time>=8" style="color:#19be6b;">{{row.time}}</Text>
+                    <Text strong v-else style="color:#ed4014;">{{row.time}}</Text>
+                </div>
+            </template>
+            <template #v_second="{ row, index }">
+                <div v-if="row.ss&&row.ee">
+                    <Text strong v-if="row.time>=8" style="color:#19be6b;">{{row.second}}</Text>
+                    <Text strong v-else style="color:#ed4014;">{{row.second}}</Text>
+                </div>
+            </template>
+            <template #v_minute="{ row, index }">
+                <div v-if="row.ss&&row.ee">
+                    <Text strong v-if="row.time>=8" style="color:#19be6b;">{{row.minute}}</Text>
+                    <Text strong v-else  style="color:#ed4014;">{{row.minute}}</Text>
+                </div>
+            </template>
+        </Table>
         <Row class="mt">
             <Col span="11">
                 <Card>
-                    <NumberInfo sub-title="秒数" :total="form.countSecond||0" />
+                    <Text strong><NumberInfo sub-title="合计时间差值-秒数" :total="form.countSecond||0" /></Text>
                 </Card>
             </Col>
             <Col span="2"></Col>
             <Col span="11">
                 <Card>
-                    <NumberInfo sub-title="分钟" :total="form.countSecond/60" />
+                    <Text strong><NumberInfo sub-title="合计时间差值-分钟" :total="(form.countSecond||0)/60" /></Text>
                 </Card>
             </Col>
         </Row>
@@ -146,5 +168,8 @@ onMounted(() => {
 .fooder{
     width: 100%;padding: 20px 0;
     display: flex;justify-content: center;align-items: center;
+}
+.ivu-number-info-total{
+    color: #19be6b;
 }
 </style>
