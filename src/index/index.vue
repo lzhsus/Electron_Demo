@@ -46,6 +46,7 @@ const form = reactive({
     data: [],
 
     countSecond:0,
+    countHH:0,
 
     htmlValue:""
 })
@@ -72,6 +73,7 @@ const dataTime = computed(()=>form.data.map(item=>{
 
 watch(dataTime, (newValue, oldValue) => {
     form.countSecond = eval(newValue.map(item=>Number(item.second||0)).join("+"))
+    form.countHH = (eval(newValue.map(item=>Number(item.time||0)).join("+"))).toFixed(3)
 });
 
 
@@ -148,15 +150,21 @@ onMounted(() => {
             </template>
         </Table>
         <Row class="mt">
-            <Col span="11">
+            <Col span="7">
                 <Card>
                     <Text strong><NumberInfo sub-title="合计时间差值-秒数" :total="form.countSecond||0" /></Text>
                 </Card>
             </Col>
-            <Col span="2"></Col>
-            <Col span="11">
+            <Col span="1"></Col>
+            <Col span="7">
                 <Card>
                     <Text strong><NumberInfo sub-title="合计时间差值-分钟" :total="(form.countSecond||0)/60" /></Text>
+                </Card>
+            </Col>
+            <Col span="1"></Col>
+            <Col span="7">
+                <Card>
+                    <Text strong><NumberInfo sub-title="累计时长-当前" :total="form.countHH||0" /></Text>
                 </Card>
             </Col>
         </Row>
