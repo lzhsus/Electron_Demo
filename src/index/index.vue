@@ -48,7 +48,8 @@ const form = reactive({
     countSecond:0,
     countHH:0,
 
-    htmlValue:""
+    htmlValue:"",
+    cookie:""
 })
 
 const dataTime = computed(()=>form.data.map(item=>{
@@ -115,6 +116,17 @@ const lookSubmit = ()=>{
     }
     initLoaderData(form.htmlValue)
 }
+
+const lookApiSubmit = ()=>{
+    // 示例：请求百度首页
+    fetch('http://localhost:3011/api/html?url=https://intonemanager.eintone.com/admin/company/workattendance&team_user_id=31&cookie='+form.cookie )
+    .then(response => response.json())
+    .then(data => {
+        console.log("======data======",data)
+        initLoaderData(data.data)
+    })
+    .catch(error => console.error('请求出错:', error));
+}
 onMounted(() => {
 
 })
@@ -173,6 +185,14 @@ onMounted(() => {
         <div class="fooder">
             <Button class="btn" type="primary" size="large" long @click="lookSubmit()">查 询</Button>
         </div>
+
+        <Input class="mt" v-model="form.cookie" type="textarea" :rows="6" placeholder="请输入Cookie" />
+        <div class="fooder">
+            <Button class="btn" type="error" size="large" long @click="lookApiSubmit()">查询数据</Button>
+        </div>
+
+        <div id="htmlContainer" class="html-content"></div>
+
     </div>
 
 
