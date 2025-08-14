@@ -125,9 +125,9 @@ const getStorage = (key, defaultValue) => {
   return val ? JSON.parse(val) : defaultValue;
 };
 
-const team_user_id = ref(getStorage('team_user_id', '31'));
-const nickname = ref(getStorage('nickname', '龙张海'));
-const password = ref(getStorage('password', 'Intone@Lzh.@111111'));
+const team_user_id = ref(getStorage('team_user_id', ''));
+const nickname = ref(getStorage('nickname', ''));
+const password = ref(getStorage('password', ''));
 const updata = ref(getStorage('updata', false));
 
 // 监听用户输入状态，自动保存
@@ -147,6 +147,10 @@ const lookApiSubmit = ()=>{
 }
 const change = (status)=>{
     updata.value = status
+}
+
+const gameSubmit = ()=>{
+    window.location.href = 'http://localhost:3000/game/index.html'
 }
 
 onMounted(()=>{
@@ -232,6 +236,10 @@ onMounted(()=>{
 
     <!-- loading -->
     <Spin size="large" fix :show="form.loading"></Spin>
+
+
+    <Button class="btn" type="primary" size="large" long @click="gameSubmit()">进入游戏</Button>
+
 </template>
 
 <style lang="scss">
