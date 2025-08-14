@@ -4,6 +4,7 @@ const path = require('path')
 const http = require('http')
 const axios = require('axios')
 const url = require('url')
+const loginAndGetCookie = require("./cookie")
  
 app.commandLine.appendSwitch("--ignore-certificate-errors", "true");
 
@@ -11,6 +12,8 @@ app.commandLine.appendSwitch("--ignore-certificate-errors", "true");
 protocol.registerSchemesAsPrivileged([
     { scheme: "app", privileges: { secure: true, standard: true } }
 ]);
+
+const URL = `https://intonemanager.eintone.com/admin/company/workattendance`
 
 // 创建HTTP服务器
 const createApiServer = () => {
@@ -23,7 +26,7 @@ const createApiServer = () => {
         res.setHeader('Access-Control-Allow-Origin', '*')
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
-        
+
         // 处理预检请求
         if (req.method === 'OPTIONS') {
             res.writeHead(204)
@@ -35,17 +38,15 @@ const createApiServer = () => {
         if (pathname === '/api/html' && req.method === 'GET') {
             try {
                 // 获取请求参数中的url参数
-                const targetUrl = parsedUrl.query.url
                 const team_user_id = parsedUrl.query.team_user_id
-                const cookie = parsedUrl.query.cookie
+                const nickname = parsedUrl.query.nickname;
+                const password = parsedUrl.query.password;
+                const updata = parsedUrl.query.updata;
                 
-                if (!targetUrl) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' })
-                    return res.end(JSON.stringify({ error: '缺少目标URL参数' }))
-                }
-                
-                // 请求目标接口
-                const response = await axios.get(targetUrl + '?team_user_id='+team_user_id,{
+                // 先登录获取Cookie，再访问接口
+                let cookie = await loginAndGetCookie(nickname,password,updata);
+
+                const response = await axios.get(URL + '?team_user_id='+team_user_id,{
                     headers: {
                     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
                     "accept-language": "zh-CN,zh;q=0.9",
@@ -125,8 +126,9 @@ const createWindow = () => {
     });
 }
  
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
  
+
     createWindow()
 
     // 创建API服务器

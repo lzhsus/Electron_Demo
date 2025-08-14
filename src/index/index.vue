@@ -117,20 +117,22 @@ const lookSubmit = ()=>{
     initLoaderData(form.htmlValue)
 }
 
+const team_user_id = ref("31")
+const nickname = ref("龙张海")
+const password = ref("Intone@Lzh.@111111")
+const updata = ref(false)
+
 const lookApiSubmit = ()=>{
-    let cookie = `intonemanager_session=${form.cookie};`
-    // 示例：请求百度首页
-    fetch('http://localhost:3011/api/html?url=https://intonemanager.eintone.com/admin/company/workattendance&team_user_id=31&cookie='+form.cookie )
+    fetch(`http://localhost:3011/api/html?team_user_id=${team_user_id.value}&nickname=${nickname.value}&password=${password.value}&updata=${updata.value}` )
     .then(response => response.json())
     .then(data => {
-        console.log("======data======",data)
         initLoaderData(data.data)
     })
     .catch(error => console.error('请求出错:', error));
 }
-onMounted(() => {
-
-})
+const change = (status)=>{
+    updata.value = status
+}
 
 </script>
 
@@ -187,9 +189,18 @@ onMounted(() => {
             <Button class="btn" type="primary" size="large" long @click="lookSubmit()">查 询</Button>
         </div>
 
-        <Input class="mt" v-model="form.cookie" type="textarea" :rows="6" placeholder="请输入Cookie" />
         <div class="fooder">
-            <Button class="btn" type="error" size="large" long @click="lookApiSubmit()">查询数据</Button>
+            <Space direction="vertical">
+                <Input prefix="ios-contact-outline" size="large" placeholder="请输入用户名" style="width: auto" v-model="nickname"/>
+                <Input prefix="ios-lock-outline" size="large" placeholder="请输入密码" style="width: auto" v-model="password"/>
+                <Input prefix="ios-disc-outline" size="large" placeholder="请输入用户ID" style="width: auto" v-model="team_user_id"/>
+                
+                <Space>
+                    是否更新Cookie：<Switch v-model="value" @on-change="change" />
+                </Space>
+
+                <Button class="btn" type="error" size="large" long @click="lookApiSubmit()">查询数据</Button>
+            </Space>
         </div>
 
         <div id="htmlContainer" class="html-content"></div>
