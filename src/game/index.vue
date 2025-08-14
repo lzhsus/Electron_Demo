@@ -2,14 +2,29 @@
 import { Notice, Message, Modal } from "view-ui-plus";
 import moment from "moment";
 import GlobalData from "./data"
+import set_UUID from "src/helper/uuid"
 
 const gameSubmit = () => {
   window.location.href = "http://localhost:3000/index/index.html";
 };
 
+
+
+const total = ref(0)
+
+
+const uuid = ref("")
+
+const list1 = ref([])
 const list2 = ref(GlobalData.list2)
 const list3 = ref(GlobalData.list3)
 const list4 = ref(GlobalData.list4)
+
+onMounted(async ()=>{
+    list1.value = GlobalData.list1||[]
+
+    uuid.value = await set_UUID()
+})
 
 </script>
 
@@ -35,89 +50,24 @@ const list4 = ref(GlobalData.list4)
                 </div>
             </div>
         </div>
-        <!-- Upgrades Section -->
+
         <section id="upgrades" class="content-section">
             <div class="section-container">
                 <h2 class="section-title">🛒 可用的空格键点击器升级</h2>
                 <ul id="items">
-                    
-                <li class="item item_buyable">
-                        <span class="item-level">x67</span>
-                        <h3 class="item-title">橡皮擦助手</h3>
-                        <p class="item-desc">经典学生技巧——把橡皮擦塞到空格键下面，保持按下状态。每秒可产生<b>0.500次点击。</b></p>
+                    <li class="item" v-for="(item,index) in list1" :key="index" :class="false?'item_buyable':'item_disabled'">
+                        <span class="item-level"><template v-if="item.lvl">x{{item.lvl}}</template></span>
+                        <h3 class="item-title">{{item.title}}</h3>
+                        <p class="item-desc">{{item.desc}}<b>{{item.initial_value}}{{item.txt}}</b></p>
                         <div class="cost">
                             <span class="currency-icon">⌨️</span>
-                            <span class="item-cost">291,538</span>
+                            <span class="item-cost">{{ item.cost }}</span>
                         </div>
-                    </li><li class="item item_buyable">
-                        <span class="item-level">x9</span>
-                        <h3 class="item-title">机械键盘</h3>
-                        <p class="item-desc">职业玩家之选！Cherry MX 轴，闪电般响应，每秒<b>2 次完美点击。</b></p>
-                        <div class="cost">
-                            <span class="currency-icon">⌨️</span>
-                            <span class="item-cost">745</span>
-                        </div>
-                    </li><li class="item item_buyable">
-                        <span class="item-level">x12</span>
-                        <h3 class="item-title">程序员之手</h3>
-                        <p class="item-desc">无数次编程马拉松磨练出的双手。肌肉记忆力臻完美。每秒精准敲击<b>8 个空格键。</b></p>
-                        <div class="cost">
-                            <span class="currency-icon">⌨️</span>
-                            <span class="item-cost">11,649</span>
-                        </div>
-                    </li><li class="item item_buyable">
-                        <span class="item-level">x2</span>
-                        <h3 class="item-title">金拇指</h3>
-                        <p class="item-desc">传说中的黄金拇指，蕴含神秘力量。每次升级，你的手动点击能力<b>都会翻倍！</b></p>
-                        <div class="cost">
-                            <span class="currency-icon">⌨️</span>
-                            <span class="item-cost">22,500</span>
-                        </div>
-                    </li><li class="item item_buyable">
-                        <span class="item-level">x5</span>
-                        <h3 class="item-title">自动点击器</h3>
-                        <p class="item-desc">USB 供电机械式按键装置。即插即用，简单便捷。每秒机械式按压<b>100 个空格键，永不疲倦。</b></p>
-                        <div class="cost">
-                            <span class="currency-icon">⌨️</span>
-                            <span class="item-cost">26,891</span>
-                        </div>
-                    </li><li class="item item_buyable">
-                        <span class="item-level">x8</span>
-                        <h3 class="item-title">电竞团队</h3>
-                        <p class="item-desc">精英职业电竞团队完美协作。闪电般的反应，协调一致的攻击。团队合作，每秒点击次数高达<b>859 次。</b></p>
-                        <div class="cost">
-                            <span class="currency-icon">⌨️</span>
-                            <span class="item-cost">275,810</span>
-                        </div>
-                    </li><li class="item item_buyable">
-                        <span class="item-level">x6</span>
-                        <h3 class="item-title">AI点击助手</h3>
-                        <p class="item-desc">深度学习驱动的点击系统，可预测最佳点击时机。AI 精准控制，每秒可执行<b>3,814 次完美点击。</b></p>
-                        <div class="cost">
-                            <span class="currency-icon">⌨️</span>
-                            <span class="item-cost">752,953</span>
-                        </div>
-                    </li><li class="item item_buyable">
-                        <span class="item-level">x4</span>
-                        <h3 class="item-title">量子键盘</h3>
-                        <p class="item-desc">未来科技利用量子纠缠，实现跨维度同时点击。量子速度可达每秒<b>14,280 次点击。</b></p>
-                        <div class="cost">
-                            <span class="currency-icon">⌨️</span>
-                            <span class="item-cost">1.921M</span>
-                        </div>
-                    </li><li class="item item_buyable">
-                        <span class="item-level">x4</span>
-                        <h3 class="item-title">宇宙点击矩阵</h3>
-                        <p class="item-desc">横跨宇宙的空格键网络，连接着无数个世界。银河系协调每秒产生<b>71,402次宇宙咔哒声。</b></p>
-                        <div class="cost">
-                            <span class="currency-icon">⌨️</span>
-                            <span class="item-cost">9.604M</span>
-                        </div>
-                    </li></ul>
+                    </li>
+                </ul>
             </div>
         </section>
 
-        <!-- How to Play Section -->
         <section id="how-to-play" class="content-section">
             <div class="section-container">
                 <h2 class="section-title">🎮 如何玩空格键点击器</h2>
@@ -140,7 +90,6 @@ const list4 = ref(GlobalData.list4)
             </div>
         </section>
 
-        <!-- FAQ Section -->
         <section id="faq" class="content-section">
             <div class="section-container">
                 <h2 class="section-title">❓ 空格键点击器常见问题解答</h2>
@@ -152,11 +101,11 @@ const list4 = ref(GlobalData.list4)
                 </div>
             </div>
         </section>
-
     </div>
 
     <Button class="btn" type="primary" size="large" long @click="gameSubmit()">返回首页</Button>
 
+    <Space><div class="ivu-p-16" style="color:#808695;">设备标识:{{uuid}}</div></Space>
 </template>
 
 <style lang="scss" scoped>

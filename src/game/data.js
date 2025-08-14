@@ -1,3 +1,87 @@
+let list1 = [
+    {   
+        lvl: 0,
+        cost: 25,
+        initial_value: 0.5,
+        cost_func: (x) => 1.15 * x,
+        value_func: (x) => 1.0 * x,
+        title:"橡皮擦助手",
+        desc:"经典学生技巧——把橡皮擦塞到空格键下面，保持按下状态。每秒可产生",
+        txt:"次点击。"
+    },{   
+        lvl: 0,
+        cost: 100,
+        initial_value: 2,
+        cost_func: (x) => 1.25 * x,
+        value_func: (x) => 1.0 * x,
+        title:"机械键盘",
+        desc:"职业玩家之选！Cherry MX 轴，闪电般响应，每秒",
+        txt:"次完美点击。"
+    },{   
+        lvl: 0,
+        cost: 500,
+        initial_value: 8,
+        cost_func: (x) => 1.3 * x,
+        value_func: (x) => 1.0 * x,
+        title:"程序员之手",
+        desc:"无数次编程马拉松磨练出的双手。肌肉记忆力臻完美。每秒精准敲击 MX 轴，闪电般响应，每秒",
+        txt:"个空格键。"
+    },{   
+        lvl: 0,
+        cost: 2500,
+        multiplier: 2,
+        cost_func: (x) => 3.0 * x,
+        title:"金拇指",
+        desc:"传说中的黄金拇指，蕴含神秘力量。每次升级，你的手动点击能力",
+        txt:"都会翻倍！"
+    },{   
+        lvl: 0,
+        cost: 5000,
+        initial_value: 50,
+        cost_func: (x) => 1.4 * x,
+        value_func: (x) => 1.15 * x,
+        title:"自动点击器",
+        desc:"USB 供电机械式按键装置。即插即用，简单便捷。每秒机械式按压",
+        txt:"个空格键，永不疲倦。"
+    },{   
+        lvl: 0,
+        cost: 25000,
+        initial_value: 200,
+        cost_func: (x) => 1.35 * x,
+        value_func: (x) => 1.2 * x,
+        title:"电竞团队",
+        desc:"USB 精英职业电竞团队完美协作。闪电般的反应，协调一致的攻击。团队合作，每秒点击次数高达",
+        txt:"次。"
+    },{   
+        lvl: 0,
+        cost: 100000,
+        initial_value: 1000,
+        cost_func: (x) => 1.4 * x,
+        value_func: (x) => 1.25 * x,
+        title:"AI点击助手",
+        desc:"USB 深度学习驱动的点击系统，可预测最佳点击时机。AI 精准控制，每秒可执行",
+        txt:"次完美点击。"
+    },{   
+        lvl: 0,
+        cost: 500000,
+        initial_value: 5000,
+        cost_func: (x) => 1.4 * x,
+        value_func: (x) => 1.3 * x,
+        title:"量子键盘",
+        desc:"未来科技利用量子纠缠，实现跨维度同时点击。量子速度可达每秒",
+        txt:"次点击。"
+    },{   
+        lvl: 0,
+        cost: 2500000,
+        initial_value: 20000,
+        cost_func: (x) => 1.4 * x,
+        value_func: (x) => 1.3 * x,
+        title:"宇宙点击矩阵",
+        desc:"横跨宇宙的空格键网络，连接着无数个世界。银河系协调每秒产生",
+        txt:"次宇宙咔哒声。"
+    }
+    
+]
 let list2 = [
     {   
         num:"1️⃣",
@@ -84,6 +168,7 @@ let list4 = [
     }
 ]
 export default {
+    list1,
     list2,
     list3,
     list4
