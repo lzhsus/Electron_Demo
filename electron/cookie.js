@@ -53,8 +53,4 @@ async function loginAndGetCookie(nickname, password, updata = false) {
     }
 }
 
-function getCookie() {
-
-}
-
 module.exports = loginAndGetCookie
