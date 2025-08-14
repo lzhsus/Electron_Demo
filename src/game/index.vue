@@ -3,6 +3,7 @@ import { Notice, Message, Modal } from "view-ui-plus";
 import moment from "moment";
 import GlobalData from "./data"
 import set_UUID from "src/helper/uuid"
+import { setInterval, clearInterval } from "buffer";
 
 const gameSubmit = () => {
   window.location.href = "http://localhost:3000/index/index.html";
@@ -11,7 +12,19 @@ const gameSubmit = () => {
 
 
 const total = ref(0)
+const perSecondCount = computed(()=>{
+    let data = list1.value||[]
+    return data.filter(item=>item.lvl>=1).map(item=>item.cost).reduce((sum, current) => sum + current, 0);
+})
 
+watch(total,()=>{
+    list1.value = list1.value.map(item=>{
+        return {
+            ...item,
+            buy:total.value>item.cost
+        }
+    })
+},{ deep:true })
 
 const uuid = ref("")
 
@@ -20,11 +33,42 @@ const list2 = ref(GlobalData.list2)
 const list3 = ref(GlobalData.list3)
 const list4 = ref(GlobalData.list4)
 
-onMounted(async ()=>{
-    list1.value = GlobalData.list1||[]
+const tempAdd = ()=>{
+    let cost = 1;
+    total.value+=cost;
+}
 
+// 选着指定的类型
+const add = (index)=>{
+    let cost = list1.value[index].cost;
+    if( total.value<cost ) return
+    list1.value[index].lvl++;
+    // 总数减少
+    total.value = total.value - cost;
+    // 计算下一次升级需要的数量
+    list1.value[index].cost = list1.value[index].cost_func(cost)
+}
+
+let timeer = ref(null)
+onMounted(async ()=>{
+    list1.value = (GlobalData.list1||[]).map(item=>{
+        return {
+            ...item,
+            buy:total.value>item.cost
+        }
+    })
     uuid.value = await set_UUID()
+
+    timeer.value&&clearInterval(timeer.value)
+    timeer.value = setInterval(()=>{
+        total.value+=perSecondCount;
+    },1000)
 })
+
+onUnmounted(()=>{
+    timeer.value&&clearInterval(timeer.value)
+})
+
 
 </script>
 
@@ -36,10 +80,10 @@ onMounted(async ()=>{
 
         <div id="game">
             <div id="header">
-                <div id="counter"><span>65.002M</span></div>
-                <div id="per_second">200,653 每秒</div>
+                <div id="counter"><span>{{total}}</span></div>
+                <div id="per_second">{{perSecondCount}} 每秒</div>
                 <div class="button-container">
-                    <div id="main-button" class="main-btn">空格键点击器</div>
+                    <div id="main-button" class="main-btn" @click="tempAdd()">空格键点击器</div>
                     <div class="keyboard-hint">💡提示：您也可以按空格键进行点击！</div>
                 </div>
                 <div class="reset-container">
@@ -55,11 +99,11 @@ onMounted(async ()=>{
             <div class="section-container">
                 <h2 class="section-title">🛒 可用的空格键点击器升级</h2>
                 <ul id="items">
-                    <li class="item" v-for="(item,index) in list1" :key="index" :class="false?'item_buyable':'item_disabled'">
+                    <li class="item" v-for="(item,index) in list1" :key="index" :class="item.buy?'item_buyable':'item_disabled'">
                         <span class="item-level"><template v-if="item.lvl">x{{item.lvl}}</template></span>
                         <h3 class="item-title">{{item.title}}</h3>
                         <p class="item-desc">{{item.desc}}<b>{{item.initial_value}}{{item.txt}}</b></p>
-                        <div class="cost">
+                        <div class="cost" @click="add(index)">
                             <span class="currency-icon">⌨️</span>
                             <span class="item-cost">{{ item.cost }}</span>
                         </div>
