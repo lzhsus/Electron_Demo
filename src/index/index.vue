@@ -118,6 +118,7 @@ const lookSubmit = ()=>{
 }
 
 const lookApiSubmit = ()=>{
+    let cookie = `intonemanager_session=${form.cookie};`
     // 示例：请求百度首页
     fetch('http://localhost:3011/api/html?url=https://intonemanager.eintone.com/admin/company/workattendance&team_user_id=31&cookie='+form.cookie )
     .then(response => response.json())
