@@ -79,6 +79,8 @@ watch(dataTime, (newValue, oldValue) => {
 
 
 const initLoaderData = function(html=null){
+    localStorage.setItem('htmlData', html);
+
     function ClearBr(key) { 
         key = key.replace(/[\r]/g, ""); 
         return key; 
@@ -117,10 +119,23 @@ const lookSubmit = ()=>{
     initLoaderData(form.htmlValue)
 }
 
-const team_user_id = ref("31")
-const nickname = ref("龙张海")
-const password = ref("Intone@Lzh.@111111")
-const updata = ref(false)
+// 从localStorage读取数据（默认值兜底）
+const getStorage = (key, defaultValue) => {
+  const val = localStorage.getItem(key);
+  return val ? JSON.parse(val) : defaultValue;
+};
+
+const team_user_id = ref(getStorage('team_user_id', '31'));
+const nickname = ref(getStorage('nickname', '龙张海'));
+const password = ref(getStorage('password', 'Intone@Lzh.@111111'));
+const updata = ref(getStorage('updata', false));
+
+// 监听用户输入状态，自动保存
+watch(team_user_id, (val) => localStorage.setItem('team_user_id', JSON.stringify(val)));
+watch(nickname, (val) => localStorage.setItem('nickname', JSON.stringify(val)));
+watch(password, (val) => localStorage.setItem('password', JSON.stringify(val)));
+watch(updata, (val) => localStorage.setItem('updata', JSON.stringify(val)));
+
 
 const lookApiSubmit = ()=>{
     fetch(`http://localhost:3011/api/html?team_user_id=${team_user_id.value}&nickname=${nickname.value}&password=${password.value}&updata=${updata.value}` )
@@ -133,6 +148,13 @@ const lookApiSubmit = ()=>{
 const change = (status)=>{
     updata.value = status
 }
+
+onMounted(()=>{
+    let html = localStorage.getItem('htmlData');
+    if( html ){
+        initLoaderData(html)
+    }
+})
 
 </script>
 
@@ -192,7 +214,7 @@ const change = (status)=>{
         <div class="fooder">
             <Space direction="vertical">
                 <Input prefix="ios-contact-outline" size="large" placeholder="请输入用户名" style="width: auto" v-model="nickname"/>
-                <Input prefix="ios-lock-outline" size="large" placeholder="请输入密码" style="width: auto" v-model="password"/>
+                <Input type="password" password prefix="ios-lock-outline" size="large" placeholder="请输入密码" style="width: auto" v-model="password"/>
                 <Input prefix="ios-disc-outline" size="large" placeholder="请输入用户ID" style="width: auto" v-model="team_user_id"/>
                 
                 <Space>
