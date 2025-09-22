@@ -1,4 +1,5 @@
-const { app, protocol, BrowserWindow, globalShortcut } = require('electron')
+const { app, protocol, BrowserWindow, globalShortcut,session } = require('electron')
+
 const path = require('path')
 // 引入需要的模块
 const http = require('http')
@@ -14,6 +15,7 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 const URL = `https://intonemanager.eintone.com/admin/company/workattendance`
+const IP = `https://intonemanager.eintone.com/add_temp_ip`
 
 // 创建HTTP服务器
 const createApiServer = () => {
@@ -33,6 +35,38 @@ const createApiServer = () => {
             res.end()
             return
         }
+        if (pathname === '/api/ip' && req.method === 'GET') {
+            try {
+                // 获取请求参数中的url参数
+                const nickname = parsedUrl.query.nickname;
+                const password = parsedUrl.query.password;
+                
+                const response = await session.defaultSession.fetch(`${IP}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        username: nickname, // 替换为实际账号
+                        password: password, // 替换为实际密码
+                    }).toString(),
+                });
+                
+                // 将获取的数据返回给页面
+                res.writeHead(200, { 'Content-Type': 'application/json' })
+                res.end(JSON.stringify({
+                    success: true,
+                    data: response.data
+                }))
+            } catch (error) {
+                res.writeHead(500, { 'Content-Type': 'application/json' })
+                res.end(JSON.stringify({
+                    success: false,
+                    error: error.message || '请求目标接口失败'
+                }))
+            }
+            return
+        }
         
         // 处理/api/html接口
         if (pathname === '/api/html' && req.method === 'GET') {
@@ -45,7 +79,6 @@ const createApiServer = () => {
                 
                 // 先登录获取Cookie，再访问接口
                 let cookie = await loginAndGetCookie(nickname,password,updata);
-
                 const response = await axios.get(URL + '?team_user_id='+team_user_id,{
                     headers: {
                     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -62,6 +95,7 @@ const createApiServer = () => {
                   },
                   referrerPolicy: "strict-origin-when-cross-origin"
                 })
+
                 
                 // 将获取的数据返回给页面
                 res.writeHead(200, { 'Content-Type': 'application/json' })
@@ -85,7 +119,7 @@ const createApiServer = () => {
     })
     
     // 监听3001端口
-    const PORT = 3011
+    const PORT = 3033
     server.listen(PORT, () => {
         console.log(`API服务器已启动，监听端口 ${PORT}`)
         console.log(`可访问接口: http://localhost:${PORT}/api/html?url=目标接口地址`)

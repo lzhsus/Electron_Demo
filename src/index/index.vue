@@ -2,6 +2,20 @@
 import { Notice, Message, Modal } from 'view-ui-plus'
 import moment from "moment";
 
+const currentTime = ref(new Date());
+let animationFrameId = null;
+
+// 格式化时间，支持自定义格式
+const formattedTime = computed(() => {
+  return moment(currentTime.value).format('YYYY-MM-DD HH:mm:ss');
+});
+
+const createCurrentTime = ()=>{
+    currentTime.value = new Date();
+    // 递归调用，实现持续更新
+    animationFrameId = requestAnimationFrame(createCurrentTime);
+}
+
 
 const form = reactive({
     pageShow: false,
@@ -93,7 +107,7 @@ const initLoaderData = function(html=null){
     let cc = /\r{0,100}\n{0,100}\ {0,100}\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\r{0,100}\n{0,100}\ {0,100}/gm;
     var getSpecificCharacters = function(strTxt,regx){
         let tttt = strTxt.match(regx);
-        return tttt.map(item=>item.match(cc)[0]);
+        return tttt&&tttt.map(item=>item.match(cc)[0]);
     }
     let starts = getSpecificCharacters(str,aa);
     let ends = getSpecificCharacters(str,bb);
@@ -137,8 +151,9 @@ watch(password, (val) => localStorage.setItem('password', JSON.stringify(val)));
 watch(updata, (val) => localStorage.setItem('updata', JSON.stringify(val)));
 
 
+
 const lookApiSubmit = ()=>{
-    fetch(`http://localhost:3011/api/html?team_user_id=${team_user_id.value}&nickname=${nickname.value}&password=${password.value}&updata=${updata.value}` )
+    fetch(`http://localhost:3033/api/html?team_user_id=${team_user_id.value}&nickname=${nickname.value}&password=${password.value}&updata=${updata.value}` )
     .then(response => response.json())
     .then(data => {
         initLoaderData(data.data)
@@ -147,6 +162,17 @@ const lookApiSubmit = ()=>{
 }
 const change = (status)=>{
     updata.value = status
+}
+
+
+const updataIp = ()=>{
+    fetch(`http://localhost:3033/api/ip?nickname=龙张海&password=U18FAevUUDBk1eYl` )
+    .then(response => response.json())
+    .then(data => {
+        Message.success('更新成功！');
+    })
+    .catch(error => console.error('请求出错:', error));
+
 }
 
 const gameSubmit = ()=>{
@@ -158,12 +184,20 @@ onMounted(()=>{
     if( html ){
         initLoaderData(html)
     }
+    
+    createCurrentTime()
 })
+
+onUnmounted(() => {
+  // 组件卸载时停止更新
+  cancelAnimationFrame(animationFrameId);
+});
 
 </script>
 
 <template>
     <div class="index-page">
+        <div class="format-time">当前时间：<span style="color:#ed4014;">{{formattedTime}}</span></div>
         <Table :columns="form.columns" :data="dataTime">
             <template #v_ee="{ row, index }">
                 <div>
@@ -226,6 +260,8 @@ onMounted(()=>{
                 </Space>
 
                 <Button class="btn" type="error" size="large" long @click="lookApiSubmit()">查询数据</Button>
+
+                <Button class="btn" type="" size="large" long @click="updataIp()">更新IP</Button>
             </Space>
         </div>
 
@@ -238,7 +274,7 @@ onMounted(()=>{
     <Spin size="large" fix :show="form.loading"></Spin>
 
 
-    <Button class="btn" type="primary" size="large" long @click="gameSubmit()">进入游戏</Button>
+    <!-- <Button class="btn" type="primary" size="large" long @click="gameSubmit()">进入游戏</Button> -->
 
 </template>
 
@@ -255,5 +291,9 @@ onMounted(()=>{
 }
 .ivu-number-info-total{
     color: #19be6b;
+}
+.format-time{
+    padding: 10px 10px 20px;display: flex;justify-content: center;align-items: center;
+    font-size: 16px;font-weight: bold;letter-spacing: 2px;
 }
 </style>

@@ -61,7 +61,7 @@ onMounted(async ()=>{
 
     timeer.value&&clearInterval(timeer.value)
     timeer.value = setInterval(()=>{
-        total.value+=perSecondCount;
+        total.value += perSecondCount;
     },1000)
 })
 

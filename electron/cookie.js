@@ -32,6 +32,8 @@ async function loginAndGetCookie(nickname, password, updata = false) {
             }).toString(),
         });
 
+        console.log("loginResponse",loginResponse)
+
         if (!loginResponse.ok) {
             throw new Error(`登录失败: ${loginResponse.status}`);
         }
