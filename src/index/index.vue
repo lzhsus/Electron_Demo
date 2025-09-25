@@ -101,7 +101,15 @@ const downTime = computed(()=>{
     let minute = Math.floor((second%3600)/60);
     second = Math.floor(second%60);
 
-    return `${hour}时${minute}分${second}秒`
+    if( hour>0 ){
+        return `${hour}时${minute}分${second}秒`
+    }
+    if( minute>0 ){
+        return `${minute}分${second}秒`
+    }
+    if( second>=0 ){
+        return `${second}秒`
+    }
 })
 
 
