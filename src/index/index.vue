@@ -7,7 +7,7 @@ let animationFrameId = null;
 
 // 格式化时间，支持自定义格式
 const formattedTime = computed(() => {
-  return moment(currentTime.value).format('YYYY-MM-DD HH:mm:ss');
+  return moment(currentTime.value).format('MM/DD HH:mm:ss');
 });
 
 const createCurrentTime = ()=>{
@@ -85,6 +85,25 @@ const dataTime = computed(()=>form.data.map(item=>{
     }
     return item;
 }))
+
+// 下班倒计时 下班时间 18:00:00
+const downTime = computed(()=>{
+    let now = moment().format("YYYY-MM-DD");
+    let down = moment(now+" 18:00:00").format("X");
+    let nowTime = moment(currentTime.value).format("X");
+    let second = down-nowTime;
+    if( second<0 ){
+        second = 0
+        return `一下班`
+    }
+    // 转为 小时 分钟 秒
+    let hour = Math.floor(second/3600);
+    let minute = Math.floor((second%3600)/60);
+    second = Math.floor(second%60);
+
+    return `${hour}时${minute}分${second}秒`
+})
+
 
 watch(dataTime, (newValue, oldValue) => {
     form.countSecond = eval(newValue.map(item=>Number(item.second||0)).join("+"))
@@ -197,7 +216,23 @@ onUnmounted(() => {
 
 <template>
     <div class="index-page">
-        <div class="format-time">当前时间：<span style="color:#ed4014;">{{formattedTime}}</span></div>
+        <Row class="mt">
+            <Col span="11">
+                <Card>
+                    <Text strong>
+                        当前时间：<span style="color:#ed4014;font-size:22px;">{{formattedTime}}</span>
+                    </Text>
+                </Card>
+            </Col>
+            <Col span="2"></Col>
+            <Col span="11">
+                <Card>
+                    <Text strong>
+                        倒计时：<span style="color:#ed4014;font-size:22px;">{{downTime}}</span>
+                    </Text>
+                </Card>
+            </Col>
+        </Row>
         <Table :columns="form.columns" :data="dataTime">
             <template #v_ee="{ row, index }">
                 <div>
@@ -285,7 +320,7 @@ onUnmounted(() => {
     width: 100%;
 }
 .mt{
-    margin-top: 20px;
+    margin-top: 20px;margin-bottom: 20px;
 }
 .fooder{
     width: 100%;padding: 20px 0;
