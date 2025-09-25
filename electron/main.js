@@ -35,6 +35,7 @@ const createApiServer = () => {
             res.end()
             return
         }
+        
         if (pathname === '/api/ip' && req.method === 'GET') {
             try {
                 // 获取请求参数中的url参数

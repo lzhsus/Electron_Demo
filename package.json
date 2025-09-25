@@ -14,7 +14,7 @@
   },
   "build": {
     "appId": "com.example.app",
-    "productName": "时间计算器",
+    "productName": "考勤",
     "copyright": "Copyright © 2023 lsl",
     "directories": {
       "output": "dist_electron"

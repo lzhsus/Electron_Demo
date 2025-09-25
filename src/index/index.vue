@@ -243,11 +243,13 @@ onUnmounted(() => {
                 </Card>
             </Col>
         </Row>
-        <Input class="mt" v-model="form.htmlValue" type="textarea" :rows="6" placeholder="请输入" />
+        
+        <!-- <Input class="mt" v-model="form.htmlValue" type="textarea" :rows="6" placeholder="请输入" />
 
         <div class="fooder">
             <Button class="btn" type="primary" size="large" long @click="lookSubmit()">查 询</Button>
-        </div>
+        </div> -->
+        
 
         <div class="fooder">
             <Space direction="vertical">
